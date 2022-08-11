@@ -2,22 +2,22 @@ import {toast} from 'react-toastify';
 
 import {ACCESSTOKEN, http} from '../../axios/index';
 import {
-    checkToken,
-    getAllProject,
+    checkTokenURL,
+    getAllProjectURL,
     getProjectDetailURL,
-    register,
+    registerURL,
     signInURL,
-    updateProject,
-    deleteProject,
+    updateProjectURL,
+    deleteProjectURL,
     createTaskURL,
     getTaskDetailURL,
-    assignUserProject,
-    getUserAddProject,
+    assignUserProjectURL,
+    getUserAddProjectURL,
     updateTaskURL,
     removeTaskURL,
-    removeUserFromProject,
-    getAllUsersManagement,
-    deleteUserManage,
+    removeUserFromProjectURL,
+    getAllUsersManagementURL,
+    deleteUserManageURL,
 } from '../../axios/apiURL';
 
 import {registerUserSuccess, registerUserFailure, loginSuccess, loginFailure} from '../reducer/userSlice';
@@ -33,7 +33,7 @@ import {updateTaskDetail} from '../reducer/taskSlice';
 export const registerThunk = (userInfo, onClick) => {
     return async (dispatch) => {
         try {
-            const reponse = await http.post(register, userInfo);
+            const reponse = await http.post(registerURL, userInfo);
             const {content} = reponse.data;
             const {email} = content;
             dispatch(registerUserSuccess(email));
@@ -101,7 +101,7 @@ export const loginThunk = (userInfo, onClick) => {
 export const checkTokenThunk = (userData) => {
     return async (dispatch) => {
         try {
-            await http.post(checkToken);
+            await http.post(checkTokenURL);
         } catch (error) {
             if (err.response?.data?.message === 'Đăng nhập thành công!') {
                 dispatch(loginSuccess(userData));
@@ -196,8 +196,8 @@ export const deleteTaskDetailThunk = (taskId, statusId, setVisibleModal) => {
 export const getListProjectAction = () => {
     return async (dispatch) => {
         try {
-            const result = await http.get(getAllProject);
-            const action = getAllProject(result.data.content);
+            const result = await http.get(getAllProjectURL);
+            const action = getAllProjectURL(result.data.content);
             dispatch(action);
         } catch (error) {
             console.log(error);
@@ -209,7 +209,7 @@ export const getListProjectAction = () => {
 export const updateProjectAction = (projectID) => {
     return async (dispatch) => {
         try {
-            const result = await http.put(updateProject + `?projectId=${projectID}`);
+            const result = await http.put(updateProjectURL + `?projectId=${projectID}`);
             dispatch({type: 'UPDATE_PROJECT', data: result.data.content});
         } catch (error) {
             toast.error('Cannot Update! Try Again Later!', {
@@ -229,7 +229,7 @@ export const updateProjectAction = (projectID) => {
 export const deleteProjectAction = (projectID) => {
     return async (dispatch) => {
         try {
-            await http.delete(`${deleteProject}?projectId=${projectID}`);
+            await http.delete(`${deleteProjectURL}?projectId=${projectID}`);
             const action = deleteProject(projectID);
             dispatch(action);
             toast.success('Successfully Delete Project', {
@@ -258,7 +258,7 @@ export const deleteProjectAction = (projectID) => {
 // ACTION: Add User To Project
 export const getUserAction = (user) => {
     return async (dispatch) => {
-        const result = await http.get(`${getUserAddProject}?keyword=${user}`);
+        const result = await http.get(`${getUserAddProjectURL}?keyword=${user}`);
         dispatch({type: 'ADD_SEARCH_USER', user: result.data.content});
         try {
         } catch (error) {
@@ -279,7 +279,7 @@ export const getUserAction = (user) => {
 export const getAllUserAction = () => {
     return async (dispatch) => {
         try {
-            const result = await http.get(getAllUsersManagement);
+            const result = await http.get(getAllUsersManagementURL);
             dispatch({type: 'GET_ALL_USER', user: result.data.content});
         } catch (error) {
             toast.error('Cannot Load User', {utoClose: 2000});
@@ -291,7 +291,7 @@ export const getAllUserAction = () => {
 export const deleteUserManageAction = (userId) => {
     return async (dispatch) => {
         try {
-            await http.delete(`${deleteUserManage}?id=${userId}`);
+            await http.delete(`${deleteUserManageURL}?id=${userId}`);
             dispatch({type: 'DELETE_USER', userId: userId});
         } catch (error) {
             toast.success('Delete User Successfully', {
@@ -311,7 +311,7 @@ export const deleteUserManageAction = (userId) => {
 export const assignUserAction = (userInfo) => {
     return async (dispatch) => {
         try {
-            await http.post(assignUserProject, userInfo);
+            await http.post(assignUserProjectURL, userInfo);
             const action = getListProjectAction();
             dispatch(action);
         } catch (error) {
@@ -332,7 +332,7 @@ export const assignUserAction = (userInfo) => {
 export const removeUserFromProjectAction = (userInfo) => {
     return async (dispatch) => {
         try {
-            await http.post(removeUserFromProject, userInfo);
+            await http.post(removeUserFromProjectURL, userInfo);
             const action = getListProjectAction();
             dispatch(action);
         } catch (error) {
